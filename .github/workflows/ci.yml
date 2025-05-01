@@ -36,8 +36,9 @@ jobs:
         - cp*-manylinux_x86_64
         - cp*-macosx_x86_64
         - cp*-macosx_arm64
-        - cp*-manylinux_arm64
+        - cp*-manylinux_aarch64
       upload_to_anaconda: true
+      upload_to_pypi: false
       anaconda_user: 'jasercion'
     secrets:
       anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
