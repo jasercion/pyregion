@@ -11,15 +11,15 @@ source:
 requirements:
   build:
     - cython
-    - numpy
+    - numpy >=2.*
     
   host:
     - cython
-    - numpy
+    - numpy >=2.*
     
   run:
     - cython
-    - numpy
+    - numpy >=2.*
 
 about:
   home: https://github.com/jasercion/pyregion
