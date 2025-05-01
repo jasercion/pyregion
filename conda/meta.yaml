@@ -13,10 +13,6 @@ requirements:
     - cython
     - numpy >=2.*
     
-  host:
-    - cython
-    - numpy >=2.*
-    
   run:
     - cython
     - numpy >=2.*
