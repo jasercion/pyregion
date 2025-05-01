@@ -8,6 +8,10 @@ package:
 source:
   git_url: https://github.com/jasercion/pyregion.git
 
+build:
+  number: {{ build_number }}
+  script: {{ PYTHON }} pyregion/setup_package.py install
+  
 requirements:
   build:
     - cython
