@@ -53,11 +53,10 @@ jobs:
         if_true: 'true'
         if_false: 'false'
     - name: Build and Publish
-      uses: openalea/action-build-publish-anaconda@v0.1.4
+      uses: openalea/action-build-publish-anaconda@v0.1.5
       with:
         conda: conda
-        miniconda-version: "latest"
-        mamba: false
+        mamba: True
         python: ${{ matrix.python-minor-version }}
         channels: jasercion
         token: ${{ secrets.ANACONDA_TOKEN }}
