@@ -1,55 +1,43 @@
-name: build_publish_anaconda
+name: CI
 
 on:
+  schedule:
+    # run every day at 4am UTC
+    - cron: '0 4 * * *'
   push:
-    tags:
-      - 'v*'
-    branches:
-      - '**'
   pull_request:
-    branches:
-      - '**'    
-  workflow_dispatch: # allows you to trigger manually
-    
-jobs:
-  build-and-publish:
-    name: ${{ matrix.os }}, Python 3.${{ matrix.python-minor-version }} for conda deployment
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      max-parallel: 6
-      matrix:
-        os: [ ubuntu-latest , macos-latest]
-        python-minor-version: [10, 11, 12]
-        isMaster:
-          - ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') }}
-        exclude:
-          - isMaster: false
-            python-minor-version: 11
-          - isMaster: false
-            python-minor-version: 12
-          - isMaster: false
-            os: macos-latest
-            python-minor-version: 10
-        
+  workflow_dispatch:
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Determine publish
-      uses: haya14busa/action-cond@v1
-      id: publish
-      with:
-        cond: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        if_true: 'true'
-        if_false: 'false'
-    - name: Build and Publish
-      uses: openalea/action-build-publish-anaconda@v0.1.5
-      with:
-        conda: conda
-        mamba: True
-        python: ${{ matrix.python-minor-version }}
-        channels: jasercion
-        token: ${{ secrets.ANACONDA_TOKEN }}
-        publish: ${{ steps.publish.outputs.value }}
-        label: main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  tests:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@924441154cf3053034c6513d5e06c69d262fb9a6  # v1.13.0
+    with:
+      envs: |
+        - macos: py310-test-oldestdeps
+        - macos: py311-test
+        - macos: py312-test
+        - linux: py310-test-oldestdeps
+        - linux: py311-test
+        - linux: py312-test
+      coverage: 'codecov'
+
+  publish:
+    needs: tests
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish.yml@8c0fde6f7e926df6ed7057255d29afa9c1ad5320  # v1.16.0
+    with:
+      test_extras: test
+      test_command: pytest -p no:warnings --pyargs pyregion
+      targets: |
+        - cp*-manylinux_x86_64
+        - cp*-macosx_x86_64
+        - cp*-macosx_arm64
+        - cp*-manylinux_arm64
+      upload_to_anaconda: true
+      anaconda_user: 'jasercion'
+    secrets:
+      anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
