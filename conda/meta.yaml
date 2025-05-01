@@ -11,17 +11,14 @@ source:
 requirements:
   build:
     - cython
-    - setuptools
     - numpy
     
   host:
     - cython
-    - setuptools
     - numpy
     
   run:
     - cython
-    - setuptools
     - numpy
 
 about:
