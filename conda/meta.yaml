@@ -6,13 +6,13 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/pyregion-{{ version }}.tar.gz
-  sha256: e8498711421173239689de523bb465245f5551a18a181cb4956d87f9c7464925
+  url: git_url: https://github.com/jasercion/pyregion.git
 
 build:
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  script: conda-build . 
+  #script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 3
-  skip: true  # [py<310]
+  #skip: true  # [py<310]
 
 requirements:
   build:
