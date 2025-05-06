@@ -36,9 +36,29 @@ jobs:
         - cp*-manylinux_x86_64
         - cp*-macosx_x86_64
         - cp*-macosx_arm64
-        - cp*-manylinux_aarch64      
+        #- cp*-manylinux_aarch64      
       upload_to_anaconda: true
       upload_to_pypi: false
       anaconda_user: 'jasercion'
     secrets:
       anaconda_token: ${{ secrets.ANACONDA_TOKEN }}
+  
+  conda_deployment:
+    name: Conda deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Conda environment creation and activation
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: 3.11
+          auto-update-conda: false
+          auto-activate-base: false
+          show-channel-urls: true
+      - name: Build and upload the conda packages
+        uses: uibcdf/action-build-and-upload-conda-packages@v2.0.0
+        with:
+          meta_yaml_dir: conda/meta.yaml # Replace with the path to your meta.yaml directory
+          user: jasercion # Replace with your Anaconda username (or an Anaconda organization username)
+          token: ${{ secrets.ANACONDA_TOKEN }} # Replace with the name of your Anaconda Token secret
