@@ -17,7 +17,6 @@ jobs:
   tests:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@924441154cf3053034c6513d5e06c69d262fb9a6  # v1.13.0
     with:
-      conda: true
       envs: |
         - macos: py310-test-oldestdeps
         - macos: py311-test
@@ -26,6 +25,7 @@ jobs:
         - linux: py311-test
         - linux: py312-test
       coverage: 'codecov'
+      conda: true
 
   publish:
     needs: tests
